@@ -68,23 +68,6 @@ const enterDrawMode = () => {
             // drawnPoints = []; // Clear points after creating the shape
         }
     };
-
-    // const pointerUp = (event) => {
-    //     if (event.button === 2 && drawnPoints.length > 2) {
-    //         // Right-click to complete the shape (assuming at least 3 points)
-    //         const shape = BABYLON.MeshBuilder.CreatePolygon("shape", { shape: drawnPoints }, scene);
-    //         shape.convertToFlatShadedMesh();
-    //         drawnPoints = [];
-
-    //         // Remove the marker spheres after completing the shape (optional)
-    //         scene.meshes.forEach((mesh) => {
-    //             if (mesh.name === "marker") {
-    //                 mesh.dispose();
-    //             }
-    //         });
-    //     }
-    // };
-
     // Event listeners for pointer events
     canvas.addEventListener("pointerdown", pointerDown);
     canvas.addEventListener("pointerup", pointerUp);
