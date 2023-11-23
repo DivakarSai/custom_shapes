@@ -1,0 +1,36 @@
+.controls{
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+    align-items: center;
+    margin: 10px 40px;
+}
+
+.mainButton{
+    border: 1px solid #000;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#renderCanvas {
+    width: 70%;
+    height: 50%;
+    touch-action: none;
+    margin: 10px 30px;
+}
+
+.mainButton:hover{
+    background-color: rgb(47, 46, 87);
+    color: #fff;
+}
+
+.highlighted{
+    background-color: rgb(106, 105, 163);
+    color: #fff;
+}
+
+
+
+
