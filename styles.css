@@ -15,8 +15,8 @@
 }
 
 #renderCanvas {
-    width: 70%;
-    height: 50%;
+    width: 75%;
+    height: 75%;
     touch-action: none;
     margin: 10px 30px;
 }

@@ -2,25 +2,22 @@
 <html>
 <head>
     <title>2D Shape Extrusion and Manipulation</title>
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>2D Shape Extrusion and Manipulation</h1>
-    <div class = "canvas">
-        <canvas id="renderCanvas"></canvas>
-    </div>
+    <canvas id="renderCanvas"></canvas>
     <div class = "controls">
-        <button id="drawButton" class = "mainButton">Draw</button>
-        <button id="extrudeButton" class = "mainButton">Extrude</button>
-        <button id="moveButton" class = "mainButton">Move</button>
-        <button id="vertexEditButton" class = "mainButton">Vertex Edit</button>
+        <button id="drawButton" class="mainButton">Draw</button>
+        <button id="extrudeButton" class="mainButton">Extrude</button>
+        <button id="moveButton" class="mainButton">Move</button>
+        <button id="vertexEditButton" class="mainButton">Vertex Edit</button>
+
     </div>
 
+    <div id="currentMode">Current Mode: None</div>
 
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
-    <script src = "./index.js"> </script>
-    <!-- Add earcut library -->
     <script src="https://cdn.jsdelivr.net/npm/earcut"></script>
-
+    <script src="index.js"></script>
 </body>
 </html>

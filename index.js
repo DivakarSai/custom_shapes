@@ -1,11 +1,17 @@
-
 const canvas = document.getElementById("renderCanvas");
 const drawButton = document.getElementById("drawButton");
 const extrudeButton = document.getElementById("extrudeButton");
 const moveButton = document.getElementById("moveButton");
 const vertexEditButton = document.getElementById("vertexEditButton");
+const cm = document.getElementById("currentMode");
 
 let scene, engine, currentMode, drawnPoints = [];
+
+const updateCurrentMode = () => {
+    cm.textContent = `Current Mode: ${currentMode}`;
+}
+
+updateCurrentMode();
 
 // Babylon.js Scene Initialization
 const createScene = () => {
@@ -18,49 +24,66 @@ const createScene = () => {
     light.intensity = 0.7;
 
     const ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 6, height: 6 }, scene);
+    let groundMaterial = new BABYLON.StandardMaterial("Ground Material", scene);
+    groundMaterial.diffuseColor = BABYLON.Color3.Red();
+    ground.material = groundMaterial;
 
     return scene;
 };
 
 // Function to handle drawing mode
 const enterDrawMode = () => {
-
-
-    currentMode = "draw";
     // Logic for drawing mode
     // Implement mouse interactions to draw 2D shapes
     // Store drawn points in 'drawnPoints' array
     currentMode = "draw";
+    updateCurrentMode();
     drawnPoints = []; // Clear previously drawn points
 
     const ground = scene.getMeshByName("ground");
 
     const pointerDown = (event) => {
-        if (event.button !== 0) return; 
-        
-        // Check for left mouse click
+        if (event.button !== 0) return; // Check for left mouse click
+
         const pickInfo = scene.pick(scene.pointerX, scene.pointerY, (mesh) => mesh === ground);
         if (pickInfo.hit) {
             const hitPoint = pickInfo.pickedPoint;
             drawnPoints.push(hitPoint.clone()); // Store the clicked point
-            // Visual cue: Adding a marker or shape at the clicked point
-            // creating a small sphere to mark the point:
+            // Visual cue: Add a marker or shape at the clicked point
+            // For example, create a small sphere to mark the point:
             const marker = BABYLON.MeshBuilder.CreateSphere("marker", { diameter: 0.1 }, scene);
             marker.position = hitPoint;
         }
     };
 
     const pointerUp = (event) => {
+        
         if (event.button === 2 && drawnPoints.length > 2) {
+            console.log("draw point: ", drawnPoints);
             // Right-click to complete the shape (assuming at least 3 points)
             // Create a polygon mesh using the drawn points
-            
             const shape = BABYLON.MeshBuilder.CreatePolygon("shape", { shape: drawnPoints }, scene);
-            console.log(shape);
+            console.log("shape: ", shape);
             shape.convertToFlatShadedMesh(); // Optional: Improve visual appearance
-            drawnPoints = []; // Clear points after creating the shape
+            // drawnPoints = []; // Clear points after creating the shape
         }
     };
+
+    // const pointerUp = (event) => {
+    //     if (event.button === 2 && drawnPoints.length > 2) {
+    //         // Right-click to complete the shape (assuming at least 3 points)
+    //         const shape = BABYLON.MeshBuilder.CreatePolygon("shape", { shape: drawnPoints }, scene);
+    //         shape.convertToFlatShadedMesh();
+    //         drawnPoints = [];
+
+    //         // Remove the marker spheres after completing the shape (optional)
+    //         scene.meshes.forEach((mesh) => {
+    //             if (mesh.name === "marker") {
+    //                 mesh.dispose();
+    //             }
+    //         });
+    //     }
+    // };
 
     // Event listeners for pointer events
     canvas.addEventListener("pointerdown", pointerDown);
@@ -71,6 +94,9 @@ const enterDrawMode = () => {
 const extrudeShape = () => {
     // Logic for extruding the drawn shape
     // Use 'drawnPoints' to create a 3D object with fixed height
+    console.log("Extrude event begins");
+    console.log("drawnPoints: ", drawnPoints);
+
     if (drawnPoints.length < 3) {
         console.error("Insufficient points to extrude. Please draw a complete shape first.");
         return;
@@ -81,21 +107,25 @@ const extrudeShape = () => {
         path.push(new BABYLON.Vector3(drawnPoints[i].x, drawnPoints[i].y, 0)); // Create a path from the 2D points
     }
 
-    const shape = BABYLON.MeshBuilder.ExtrudePolygon("extrudedShape", { shape: path, depth: 1 }, scene);
+    console.log("path:", path )
+    fixed_depth = 1.2
+    const shape = BABYLON.MeshBuilder.ExtrudePolygon("extrudedShape", { shape: drawnPoints, depth: fixed_depth }, scene);
+    shape.position.y += fixed_depth;
     // 'depth' parameter controls the extrusion height, adjust as needed
 
     // Optionally, perform additional operations or set properties for the extruded shape
 
-    drawnPoints = []; // Clear drawn points after extrusion
+    // drawnPoints = []; // Clear drawn points after extrusion
+    console.log("Extrude event ends")
 
 };
 
 // Function to handle moving objects mode
 const enterMoveMode = () => {
     currentMode = "move";
+    updateCurrentMode();
     // Logic for moving objects
     // Implement click-and-drag functionality to move extruded objects
-    currentMode = "move";
 
     const ground = scene.getMeshByName("ground");
     const pickedMeshes = [];
@@ -134,10 +164,10 @@ const enterMoveMode = () => {
 
 // Function to handle vertex editing mode
 const enterVertexEditMode = () => {
-    currentMode = "vertexEdit";
     // Logic for vertex editing
     // Allow users to select vertices and move them using mouse interactions
     currentMode = "vertexEdit";
+    updateCurrentMode();
 
     const ground = scene.getMeshByName("ground");
     let selectedVertex = null;
@@ -159,9 +189,27 @@ const enterVertexEditMode = () => {
     };
 
     const pointerMove = (event) => {
-        if (selectedVertex !== null) {
-            // Logic to update the position of the selected vertex based on pointer movement
-            // For example, move the selected vertex to the new pointer position
+        if (selectedVertex !== null && selectedMesh !== null) {
+            const pickInfo = scene.pick(scene.pointerX, scene.pointerY, (mesh) => mesh === ground);
+            if (pickInfo.hit) {
+                // Update the position of the selected vertex based on pointer movement
+                const newPosition = pickInfo.pickedPoint.clone();
+
+                // Retrieve the vertices of the selected mesh
+                const vertices = selectedMesh.getVerticesData(BABYLON.VertexBuffer.PositionKind);
+
+                // Update the position of the selected vertex
+                vertices[selectedVertex * 3] = newPosition.x; // X-coordinate
+                vertices[selectedVertex * 3 + 1] = newPosition.y; // Y-coordinate
+                vertices[selectedVertex * 3 + 2] = newPosition.z; // Z-coordinate
+
+                // Update the mesh vertices
+                selectedMesh.updateVerticesData(BABYLON.VertexBuffer.PositionKind, vertices);
+
+                // Recalculate mesh normals and update
+                selectedMesh.createNormals();
+                selectedMesh.refreshBoundingInfo();
+            }
         }
     };
 
