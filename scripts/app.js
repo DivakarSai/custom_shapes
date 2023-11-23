@@ -1,3 +1,5 @@
+import {createScene} from "./createScene.js";
+
 const canvas = document.getElementById("renderCanvas");
 const drawButton = document.getElementById("drawButton");
 const extrudeButton = document.getElementById("extrudeButton");
@@ -15,22 +17,23 @@ let camera;
 updateCurrentMode();
 
 // Babylon.js Scene Initialization
-const createScene = () => {
-    scene = new BABYLON.Scene(engine);
 
-    camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 2, Math.PI / 2.5, 5, BABYLON.Vector3.Zero(), scene);
-    camera.attachControl(canvas, true);
+// const createScene = () => {
+//     scene = new BABYLON.Scene(engine);
 
-    const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-    light.intensity = 0.7;
+//     camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 2, Math.PI / 2.5, 5, BABYLON.Vector3.Zero(), scene);
+//     camera.attachControl(canvas, true);
 
-    const ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 6, height: 6 }, scene);
-    let groundMaterial = new BABYLON.StandardMaterial("Ground Material", scene);
-    groundMaterial.diffuseColor = BABYLON.Color3.Red();
-    ground.material = groundMaterial;
+//     const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+//     light.intensity = 0.7;
 
-    return scene;
-};
+//     const ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 6, height: 6 }, scene);
+//     let groundMaterial = new BABYLON.StandardMaterial("Ground Material", scene);
+//     groundMaterial.diffuseColor = BABYLON.Color3.Red();
+//     ground.material = groundMaterial;
+
+//     return scene;
+// };
 
 const pointerDownDraw = (event) => {
     const ground = scene.getMeshByName("ground");
@@ -94,7 +97,7 @@ const extrudeShape = () => {
     }
 
     console.log("path:", path )
-    fixed_depth = 1.2
+    let fixed_depth = 1.2
     const shape = BABYLON.MeshBuilder.ExtrudePolygon("extrudedShape", { shape: drawnPoints, depth: fixed_depth }, scene);
     shape.position.y += fixed_depth;
     // 'depth' parameter controls the extrusion height, adjust as needed
@@ -260,7 +263,9 @@ vertexEditButton.addEventListener("click", enterVertexEditMode);
 // Babylon.js Engine Initialization
 window.addEventListener("DOMContentLoaded", () => {
     engine = new BABYLON.Engine(canvas, true);
-    scene = createScene();
+    let obj = createScene(engine, canvas);
+    scene = obj.scene;
+    camera = obj.camera;
     engine.runRenderLoop(() => {
         scene.render();
     });
