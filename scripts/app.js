@@ -16,24 +16,10 @@ const updateCurrentMode = () => {
 let camera;
 updateCurrentMode();
 
-// Babylon.js Scene Initialization
 
-// const createScene = () => {
-//     scene = new BABYLON.Scene(engine);
+//parameters for camera
+let alpha, beta, radius, target;
 
-//     camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 2, Math.PI / 2.5, 5, BABYLON.Vector3.Zero(), scene);
-//     camera.attachControl(canvas, true);
-
-//     const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-//     light.intensity = 0.7;
-
-//     const ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 6, height: 6 }, scene);
-//     let groundMaterial = new BABYLON.StandardMaterial("Ground Material", scene);
-//     groundMaterial.diffuseColor = BABYLON.Color3.Red();
-//     ground.material = groundMaterial;
-
-//     return scene;
-// };
 
 const pointerDownDraw = (event) => {
     const ground = scene.getMeshByName("ground");
@@ -72,7 +58,24 @@ const enterDrawMode = () => {
     // Store drawn points in 'drawnPoints' array
     currentMode = "draw";
     updateCurrentMode();
+        // To re-enable camera controls
+
+    alpha = camera.alpha;
+    beta = camera.beta;
+    radius = camera.radius;
+    target = camera.getTarget().clone();
+    camera.dispose();
+
+    // Create a new camera instance
+    camera = new BABYLON.ArcRotateCamera("Camera",alpha, beta, radius, target, scene);
     camera.attachControl(canvas, true);
+
+    //remove events listeners for pointer events
+    canvas.removeEventListener("pointerdown", pointerDownMove);
+    canvas.removeEventListener("pointermove", pointerPositionMove);
+    canvas.removeEventListener("pointerup", pointerUpMove);
+
+    
     drawnPoints = []; // Clear previously drawn points
     // Event listeners for pointer events
     canvas.addEventListener("pointerdown", pointerDownDraw);
@@ -109,6 +112,37 @@ const extrudeShape = () => {
 
 };
 
+const pointerUpMove = (event) => {
+    pickedMeshes.length = 0; // Clear the picked meshes array
+};
+
+const pointerDownMove = (event) => {
+    const ground = scene.getMeshByName("ground");
+    const pickInfo = scene.pick(scene.pointerX, scene.pointerY);
+    if (pickInfo.hit && pickInfo.pickedMesh !== ground) {
+        // Check if the picked mesh is not the ground
+        pickedMeshes.push(pickInfo.pickedMesh);
+    }
+};
+
+const pointerPositionMove = (event) => {
+    const ground = scene.getMeshByName("ground");
+    if (pickedMeshes.length > 0) {
+        const pickInfo = scene.pick(scene.pointerX, scene.pointerY, (mesh) => mesh === ground);
+        if (pickInfo.hit) {
+            // Move the picked meshes along the ground plane
+            const newPosition = pickInfo.pickedPoint.clone();
+            for (let i = 0; i < pickedMeshes.length; i++) {
+                pickedMeshes[i].position.x = newPosition.x;
+                pickedMeshes[i].position.z = newPosition.z;
+            }
+        }
+    }
+};
+
+let pickedMeshes;
+
+
 // Function to handle moving objects mode
 const enterMoveMode = () => {
     currentMode = "move";
@@ -123,43 +157,18 @@ const enterMoveMode = () => {
     canvas.removeEventListener("pointerdown", pointerDownDraw);
     canvas.removeEventListener("pointerup", pointerUpDraw);
 
-    // To re-enable camera controls
-    //camera.attachControl(canvas, true);
 
 
-    const ground = scene.getMeshByName("ground");
-    const pickedMeshes = [];
 
-    const pointerDown = (event) => {
-        const pickInfo = scene.pick(scene.pointerX, scene.pointerY);
-        if (pickInfo.hit && pickInfo.pickedMesh !== ground) {
-            // Check if the picked mesh is not the ground
-            pickedMeshes.push(pickInfo.pickedMesh);
-        }
-    };
-
-    const pointerMove = (event) => {
-        if (pickedMeshes.length > 0) {
-            const pickInfo = scene.pick(scene.pointerX, scene.pointerY, (mesh) => mesh === ground);
-            if (pickInfo.hit) {
-                // Move the picked meshes along the ground plane
-                const newPosition = pickInfo.pickedPoint.clone();
-                for (let i = 0; i < pickedMeshes.length; i++) {
-                    pickedMeshes[i].position.x = newPosition.x;
-                    pickedMeshes[i].position.z = newPosition.z;
-                }
-            }
-        }
-    };
-
-    const pointerUp = (event) => {
-        pickedMeshes.length = 0; // Clear the picked meshes array
-    };
+    
+    pickedMeshes = [];
 
     // Event listeners for pointer events
-    canvas.addEventListener("pointerdown", pointerDown);
-    canvas.addEventListener("pointermove", pointerMove);
-    canvas.addEventListener("pointerup", pointerUp);
+    canvas.addEventListener("pointerdown", pointerDownMove);
+    canvas.addEventListener("pointermove", pointerPositionMove);
+    canvas.addEventListener("pointerup", pointerUpMove);
+
+    
 };
 
 // Function to handle vertex editing mode

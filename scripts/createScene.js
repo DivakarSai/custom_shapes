@@ -1,3 +1,4 @@
+// Babylon JS scene creation
 export const createScene = (engine, canvas) => {
     let scene = new BABYLON.Scene(engine);
 

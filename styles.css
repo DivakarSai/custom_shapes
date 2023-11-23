@@ -1,3 +1,10 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: antiquewhite;
+}
+
 .controls{
     display: flex;
     justify-content: space-between;
@@ -29,6 +36,15 @@
 .highlighted{
     background-color: rgb(106, 105, 163);
     color: #fff;
+}
+
+#currentMode{
+    font-size: 60px;
+    font-weight: bold;
+    margin: 40px 10%;
+    font: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    justify-content: center;
+    color: rgb(208, 176, 134);
 }
 
 
