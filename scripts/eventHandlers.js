@@ -26,12 +26,15 @@ const pointerDown = (event) => {
                 // Move mode pointer down logic
                 const scene1 = sharedState.modeSpecificVariables.move.scene;
                 const ground1 = sharedState.modeSpecificVariables.move.ground;
-                const pickedMeshes= sharedState.modeSpecificVariables.move.pickedMeshes;
+                const pickedMeshes = sharedState.modeSpecificVariables.move.pickedMeshes;
                 const pickInfo1 = scene1.pick(scene1.pointerX, scene1.pointerY);
                 if (pickInfo1.hit && pickInfo1.pickedMesh !== ground1) {
                 // Check if the picked mesh is not the ground
                 pickedMeshes.push(pickInfo1.pickedMesh);
+                console.log("picked mesh: ", pickInfo1.pickedMesh);
                 }
+                sharedState.modeSpecificVariables.move.pickedMeshes = pickedMeshes;
+                // console.log("pointerDown: move", sharedState)
             break;
 
     }
@@ -45,12 +48,12 @@ const pointerUp = (event) => {
             let drawnPoints = sharedState.drawnPoints
             const scene = sharedState.modeSpecificVariables.draw.scene;
             if (event.button === 2 && drawnPoints.length > 2) {
-                console.log("draw point: ", drawnPoints);
                 // Right-click to complete the shape (assuming at least 3 points)
                 // Create a polygon mesh using the drawn points
-                const shape = BABYLON.MeshBuilder.CreatePolygon("shape", { shape: drawnPoints }, scene);
+                let shape = BABYLON.MeshBuilder.CreatePolygon("shape", { shape: drawnPoints }, scene);
                 console.log("shape: ", shape);
                 shape.convertToFlatShadedMesh(); // Optional: Improve visual appearance
+                sharedState.selectedPolygon = shape;
                 // drawnPoints = []; // Clear points after creating the shape
             }
             break;
@@ -59,8 +62,10 @@ const pointerUp = (event) => {
             break;
         case 'move':
             // Move mode pointer up logic
+            console.log("pointeUp move before: ", sharedState);
             let pickedMeshes = sharedState.modeSpecificVariables.move.pickedMeshes;
             pickedMeshes.length = 0; 
+            console.log("pointeUp move: ", sharedState);
             break;
     }
 };
@@ -77,6 +82,7 @@ const pointerMove = (event) => {
             break;
         case 'move':
             // Move mode pointer move logic
+            // console.log("pointerMove move: ", sharedState);
             const scene = sharedState.modeSpecificVariables.move.scene;
             const ground = sharedState.modeSpecificVariables.move.ground;
             const pickedMeshes = sharedState.modeSpecificVariables.move.pickedMeshes;

@@ -7,7 +7,6 @@ import sharedState from "./sharedState.js";
 
 const canvas = document.getElementById("renderCanvas");
 const engine = new BABYLON.Engine(canvas, true);
-
 const cm = document.getElementById("currentMode");
 
 let scene,
@@ -63,6 +62,7 @@ const setCurrentMode = (newMode) => {
         break;
     }
   }
+  updateCurrentMode(newMode);
 };
 
 const updateCurrentMode = () => {

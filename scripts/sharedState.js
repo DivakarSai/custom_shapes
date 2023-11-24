@@ -3,6 +3,7 @@ const sharedState = {
     drawnPoints: [],
     selectedMesh: null,
     selectedVertex: null,
+    selectedPolygon: null,
     modeSpecificVariables: {
         draw: {
             scene: null, 

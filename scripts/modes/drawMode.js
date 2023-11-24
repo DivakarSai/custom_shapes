@@ -7,6 +7,8 @@ const enterDrawMode = (scene, canvas) => {
     sharedState.drawnPoints = [] // Clear previously drawn points
     sharedState.modeSpecificVariables.draw.scene = scene
     sharedState.modeSpecificVariables.draw.ground = scene.getMeshByName("ground");
+
+    
     
 
     canvas.addEventListener("pointerdown", drawPointerDown);
