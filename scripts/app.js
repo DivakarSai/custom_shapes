@@ -1,8 +1,9 @@
 import { createScene } from "./createScene.js";
 import { enterDrawMode, exitDrawMode } from "./modes/drawMode.js";
 import { enterExtrudeMode, exitExtrudeMode } from "./modes/extrudeMode.js";
-import sharedState from "./sharedState.js";
+import { enterViewMode, exitViewMode } from "./modes/viewMode.js";
 import { enterMoveMode, exitMoveMode } from "./modes/moveMode.js";
+import sharedState from "./sharedState.js";
 
 const canvas = document.getElementById("renderCanvas");
 const engine = new BABYLON.Engine(canvas, true);
@@ -33,6 +34,7 @@ const setCurrentMode = (newMode) => {
         case "vertexEdit":
             break;
         case "view":
+            exitViewMode();
             break;
         default:
             console.log("Invalid mode");
@@ -54,7 +56,8 @@ const setCurrentMode = (newMode) => {
         enterVertexEditMode();
         break;
       case "view":
-        exitDrawMode();
+        enterViewMode();
+        break;
       default:
         console.log("Invalid mode");
         break;
@@ -173,6 +176,11 @@ const findClosestVertex = (mesh, point) => {
 
 // Event listeners for mode buttons
 // Event listeners for mode buttons
+
+const viewButton = document.getElementById("viewButton");
+viewButton.addEventListener("click", () => {
+  setCurrentMode("view");
+});
 const drawButton = document.getElementById("drawButton");
 drawButton.addEventListener("click", () => {
   setCurrentMode("draw");
