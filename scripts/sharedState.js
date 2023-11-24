@@ -12,6 +12,10 @@ const sharedState = {
             scene: null, 
             ground: null,
         },
+        move: {
+            scene: null, 
+            ground: null,
+        },
     },
     cameraSpec: {
         alpha: null,

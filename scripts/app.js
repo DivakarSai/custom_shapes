@@ -2,6 +2,7 @@ import { createScene } from "./createScene.js";
 import { enterDrawMode, exitDrawMode } from "./modes/drawMode.js";
 import { enterExtrudeMode, exitExtrudeMode } from "./modes/extrudeMode.js";
 import sharedState from "./sharedState.js";
+import { enterMoveMode } from "./modes/moveMode.js";
 
 const canvas = document.getElementById("renderCanvas");
 const engine = new BABYLON.Engine(canvas, true);
@@ -38,7 +39,7 @@ const setCurrentMode = (newMode) => {
         exitDrawMode(canvas);
         exitExtrudeMode();
         // exitVertexEditMode();
-        enterMoveMode();
+        enterMoveMode(scene,canvas);
         break;
       case "vertexEdit":
         exitDrawMode();
@@ -59,56 +60,56 @@ const updateCurrentMode = () => {
   cm.textContent = `Current Mode: ${sharedState.currentMode}`;
 };
 
-// Function to handle moving objects mode
-const enterMoveMode = () => {
-  currentMode = "move";
-  console.log("move event starts");
-  updateCurrentMode();
-  // Logic for moving objects
-  // Implement click-and-drag functionality to move extruded objects
+// // Function to handle moving objects mode
+// const enterMoveMode = () => {
+//   currentMode = "move";
+//   console.log("move event starts");
+//   updateCurrentMode();
+//   // Logic for moving objects
+//   // Implement click-and-drag functionality to move extruded objects
 
-//   camera.inputs.clear();
+// //   camera.inputs.clear();
 
-  const ground = scene.getMeshByName("ground");
-  const pickedMeshes = [];
+//   const ground = scene.getMeshByName("ground");
+//   const pickedMeshes = [];
 
-  const pointerDown = (event) => {
-    const pickInfo = scene.pick(scene.pointerX, scene.pointerY);
-    if (pickInfo.hit && pickInfo.pickedMesh !== ground) {
-      // Check if the picked mesh is not the ground
-      pickedMeshes.push(pickInfo.pickedMesh);
-    }
-  };
+//   const pointerDown = (event) => {
+//     const pickInfo = scene.pick(scene.pointerX, scene.pointerY);
+//     if (pickInfo.hit && pickInfo.pickedMesh !== ground) {
+//       // Check if the picked mesh is not the ground
+//       pickedMeshes.push(pickInfo.pickedMesh);
+//     }
+//   };
 
-  const pointerMove = (event) => {
-    if (pickedMeshes.length > 0) {
-      const pickInfo = scene.pick(
-        scene.pointerX,
-        scene.pointerY,
-        (mesh) => mesh === ground
-      );
-      if (pickInfo.hit) {
-        // Move the picked meshes along the ground plane
-        const newPosition = pickInfo.pickedPoint.clone();
-        for (let i = 0; i < pickedMeshes.length; i++) {
-          pickedMeshes[i].position.x = newPosition.x;
-          pickedMeshes[i].position.z = newPosition.z;
-        }
-      }
-    }
-  };
+//   const pointerMove = (event) => {
+//     if (pickedMeshes.length > 0) {
+//       const pickInfo = scene.pick(
+//         scene.pointerX,
+//         scene.pointerY,
+//         (mesh) => mesh === ground
+//       );
+//       if (pickInfo.hit) {
+//         // Move the picked meshes along the ground plane
+//         const newPosition = pickInfo.pickedPoint.clone();
+//         for (let i = 0; i < pickedMeshes.length; i++) {
+//           pickedMeshes[i].position.x = newPosition.x;
+//           pickedMeshes[i].position.z = newPosition.z;
+//         }
+//       }
+//     }
+//   };
 
-  const pointerUp = (event) => {
-    pickedMeshes.length = 0; // Clear the picked meshes array
-  };
+//   const pointerUp = (event) => {
+//     pickedMeshes.length = 0; // Clear the picked meshes array
+//   };
 
-  // Event listeners for pointer events
-  canvas.addEventListener("pointerdown", pointerDown);
-  canvas.addEventListener("pointermove", pointerMove);
-  canvas.addEventListener("pointerup", pointerUp);
+//   // Event listeners for pointer events
+//   canvas.addEventListener("pointerdown", pointerDown);
+//   canvas.addEventListener("pointermove", pointerMove);
+//   canvas.addEventListener("pointerup", pointerUp);
 
-  console.log("move event ends");
-};
+//   console.log("move event ends");
+// };
 
 // Function to handle vertex editing mode
 const enterVertexEditMode = () => {
