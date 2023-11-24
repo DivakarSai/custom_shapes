@@ -15,6 +15,7 @@ const sharedState = {
         move: {
             scene: null, 
             ground: null,
+            pickedMeshes: [],
         },
     },
     cameraSpec: {

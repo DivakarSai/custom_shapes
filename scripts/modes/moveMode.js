@@ -1,4 +1,5 @@
 import sharedState from "../sharedState.js";
+import { pointerDown as movePointerDown, pointerUp as movePointerUp, pointerMove as movePointerMove } from "../eventHandlers.js";
 
 // Function to handle moving objects mode
 const enterMoveMode = (scene,canvas) => {
@@ -10,44 +11,26 @@ const enterMoveMode = (scene,canvas) => {
   //   camera.inputs.clear();
   
     const ground = scene.getMeshByName("ground");
-    const pickedMeshes = [];
-  
-    const pointerDown = (event) => {
-      const pickInfo = scene.pick(scene.pointerX, scene.pointerY);
-      if (pickInfo.hit && pickInfo.pickedMesh !== ground) {
-        // Check if the picked mesh is not the ground
-        pickedMeshes.push(pickInfo.pickedMesh);
-      }
-    };
-  
-    const pointerMove = (event) => {
-      if (pickedMeshes.length > 0) {
-        const pickInfo = scene.pick(
-          scene.pointerX,
-          scene.pointerY,
-          (mesh) => mesh === ground
-        );
-        if (pickInfo.hit) {
-          // Move the picked meshes along the ground plane
-          const newPosition = pickInfo.pickedPoint.clone();
-          for (let i = 0; i < pickedMeshes.length; i++) {
-            pickedMeshes[i].position.x = newPosition.x;
-            pickedMeshes[i].position.z = newPosition.z;
-          }
-        }
-      }
-    };
-  
-    const pointerUp = (event) => {
-      pickedMeshes.length = 0; // Clear the picked meshes array
-    };
+    const pickedMeshes = []; // Array to store picked meshes
+
+    sharedState.modeSpecificVariables.move.scene = scene;
+    sharedState.modeSpecificVariables.move.ground = ground;
+    sharedState.modeSpecificVariables.move.pickedMeshes = pickedMeshes;
   
     // Event listeners for pointer events
-    canvas.addEventListener("pointerdown", pointerDown);
-    canvas.addEventListener("pointermove", pointerMove);
-    canvas.addEventListener("pointerup", pointerUp);
+    canvas.addEventListener("pointerdown", movePointerDown);
+    canvas.addEventListener("pointermove", movePointerMove);
+    canvas.addEventListener("pointerup", movePointerUp);
   
     console.log("move event ends");
   };
 
-  export {enterMoveMode};
+const exitMoveMode = (canvas) => {
+    // Cleanup for move mode
+    canvas.removeEventListener("pointerdown", movePointerDown);
+    canvas.removeEventListener("pointermove", movePointerMove);
+    canvas.removeEventListener("pointerup", movePointerUp);
+    console.log("move event ends");
+    };
+
+  export {enterMoveMode, exitMoveMode};

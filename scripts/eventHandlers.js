@@ -21,6 +21,19 @@ const pointerDown = (event) => {
         case 'extrude':
             // Extrude mode pointer down logic
             break;
+
+        case 'move':
+                // Move mode pointer down logic
+                const scene1 = sharedState.modeSpecificVariables.move.scene;
+                const ground1 = sharedState.modeSpecificVariables.move.ground;
+                const pickedMeshes= sharedState.modeSpecificVariables.move.pickedMeshes;
+                const pickInfo1 = scene1.pick(scene1.pointerX, scene1.pointerY);
+                if (pickInfo1.hit && pickInfo1.pickedMesh !== ground1) {
+                // Check if the picked mesh is not the ground
+                pickedMeshes.push(pickInfo1.pickedMesh);
+                }
+            break;
+
     }
 };
 
@@ -44,7 +57,45 @@ const pointerUp = (event) => {
         case 'extrude':
             // Extrude mode pointer up logic
             break;
+        case 'move':
+            // Move mode pointer up logic
+            let pickedMeshes = sharedState.modeSpecificVariables.move.pickedMeshes;
+            pickedMeshes.length = 0; 
+            break;
     }
 };
 
-export { pointerDown, pointerUp };
+
+const pointerMove = (event) => {
+    // Pointer move logic for drawing mode and other modes
+    switch (sharedState.currentMode) {
+        case 'draw':
+            // Draw mode pointer move logic
+            break;
+        case 'extrude':
+            // Extrude mode pointer move logic
+            break;
+        case 'move':
+            // Move mode pointer move logic
+            const scene = sharedState.modeSpecificVariables.move.scene;
+            const ground = sharedState.modeSpecificVariables.move.ground;
+            const pickedMeshes = sharedState.modeSpecificVariables.move.pickedMeshes;
+            if (pickedMeshes.length > 0) {
+                const pickInfo = scene.pick(
+                  scene.pointerX,
+                  scene.pointerY,
+                  (mesh) => mesh === ground
+                );
+                if (pickInfo.hit) {
+                  // Move the picked meshes along the ground plane
+                  const newPosition = pickInfo.pickedPoint.clone();
+                  for (let i = 0; i < pickedMeshes.length; i++) {
+                    pickedMeshes[i].position.x = newPosition.x;
+                    pickedMeshes[i].position.z = newPosition.z;
+                  }
+                }
+              }
+    }
+}
+
+export { pointerDown, pointerUp, pointerMove };
