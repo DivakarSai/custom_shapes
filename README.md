@@ -1,4 +1,6 @@
 # custom_shapes
-application to create ans manipulate custom 3d objects
+application to create and manipulate custom 3d objects
+
+
 
 Created with babylon.js
