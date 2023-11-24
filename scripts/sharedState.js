@@ -18,7 +18,8 @@ const sharedState = {
             pickedMeshes: [],
         },
     },
-    cameraSpec: {
+    camera : [],
+    cameraSpecs: {
         alpha: null,
         beta: null,
         radius: null,

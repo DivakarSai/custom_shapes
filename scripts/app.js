@@ -6,10 +6,7 @@ import { enterMoveMode, exitMoveMode } from "./modes/moveMode.js";
 
 const canvas = document.getElementById("renderCanvas");
 const engine = new BABYLON.Engine(canvas, true);
-// const drawButton = document.getElementById("drawButton");
-// const extrudeButton = document.getElementById("extrudeButton");
-// const moveButton = document.getElementById("moveButton");
-// const vertexEditButton = document.getElementById("vertexEditButton");
+
 const cm = document.getElementById("currentMode");
 
 let scene,
@@ -20,31 +17,40 @@ let currentMode = "none"; // Initialize with default mode
 // let alpha, beta, radius, target;
 
 const setCurrentMode = (newMode) => {
+    const prevMode = sharedState.currentMode;
   if (sharedState.currentMode !== newMode) {
+
+    switch (prevMode) {
+        case "draw":
+            exitDrawMode(canvas);
+            break;
+        case "extrude":
+            exitExtrudeMode();
+            break;
+        case "move":
+            exitMoveMode(canvas,camera);
+            break;
+        case "vertexEdit":
+            break;
+        case "view":
+            break;
+        default:
+            console.log("Invalid mode");
+            break;
+        }
+   
     sharedState.currentMode = newMode;
     switch (newMode) {
       case "draw":
-        exitExtrudeMode();
-        exitMoveMode(canvas);
-        // exitVertexEditMode();
         enterDrawMode(scene, canvas);
         break;
       case "extrude":
-        exitDrawMode(canvas);
-        exitMoveMode(canvas);
-        // exitVertexEditMode();
         enterExtrudeMode();
         break;
       case "move":
-        exitDrawMode(canvas);
-        exitExtrudeMode();
-        // exitVertexEditMode();
-        enterMoveMode(scene,canvas);
+        enterMoveMode(scene,canvas,camera);
         break;
       case "vertexEdit":
-        exitDrawMode();
-        exitExtrudeMode();
-        exitMoveMode(canvas);
         enterVertexEditMode();
         break;
       case "view":
@@ -192,6 +198,7 @@ window.addEventListener("DOMContentLoaded", () => {
   let obj = createScene(engine, canvas);
   scene = obj.scene;
   camera = obj.camera;
+  sharedState.camera = camera;
   engine.runRenderLoop(() => {
     scene.render();
   });

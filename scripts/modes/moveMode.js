@@ -2,13 +2,19 @@ import sharedState from "../sharedState.js";
 import { pointerDown as movePointerDown, pointerUp as movePointerUp, pointerMove as movePointerMove } from "../eventHandlers.js";
 
 // Function to handle moving objects mode
-const enterMoveMode = (scene,canvas) => {
+const enterMoveMode = (scene,canvas,camera) => {
     sharedState.currentMode = "move";
     console.log("move event starts");
     // Logic for moving objects
     // Implement click-and-drag functionality to move extruded objects
-  
-  //   camera.inputs.clear();
+
+    sharedState.cameraSpecs.alpha = camera.alpha;
+    sharedState.cameraSpecs.beta = camera.beta;
+    sharedState.cameraSpecs.radius = camera.radius;
+    sharedState.cameraSpecs.target = camera.target;
+
+
+    sharedState.camera.detachControl(canvas);
   
     const ground = scene.getMeshByName("ground");
     const pickedMeshes = []; // Array to store picked meshes
@@ -22,14 +28,25 @@ const enterMoveMode = (scene,canvas) => {
     canvas.addEventListener("pointermove", movePointerMove);
     canvas.addEventListener("pointerup", movePointerUp);
   
-    console.log("move event ends");
   };
 
-const exitMoveMode = (canvas) => {
+const exitMoveMode = (canvas,camera) => {
+
+
     // Cleanup for move mode
+
+
+    // allow camera to move
+    
+    console.log("currentCamera: ", sharedState.camera);
+
     canvas.removeEventListener("pointerdown", movePointerDown);
     canvas.removeEventListener("pointermove", movePointerMove);
     canvas.removeEventListener("pointerup", movePointerUp);
+
+
+    camera.attachControl(canvas, true);
+
     console.log("move event ends");
     };
 
