@@ -3,10 +3,7 @@ import { enterDrawMode, exitDrawMode } from "./modes/drawMode.js";
 import { enterExtrudeMode, exitExtrudeMode } from "./modes/extrudeMode.js";
 import { enterViewMode, exitViewMode } from "./modes/viewMode.js";
 import { enterMoveMode, exitMoveMode } from "./modes/moveMode.js";
-import {
-  enterVertexEditMode,
-  exitVertexEditMode,
-} from "./modes/VertexEditMode.js";
+import { exitVertexEditMode, enterVertexEditMode } from "./modes/vertexEditMode.js";
 import sharedState from "./sharedState.js";
 
 const canvas = document.getElementById("renderCanvas");

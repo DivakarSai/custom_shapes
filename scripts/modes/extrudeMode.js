@@ -24,11 +24,6 @@ const enterExtrudeMode = () => {
     shape.position.y += fixed_depth;
 
     if(sharedState.selectedPolygon != null)sharedState.selectedPolygon.dispose(); // removes the polygon created in drawMode from memory
-    // 'depth' parameter controls the extrusion height, adjust as needed
-  
-    // Optionally, perform additional operations or set properties for the extruded shape
-  
-    // drawnPoints = []; // Clear drawn points after extrusion
     
   };
 

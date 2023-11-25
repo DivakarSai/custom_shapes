@@ -1,9 +1,9 @@
 import sharedState from "./sharedState.js";
 import { showPrompt } from "./components/prompt.js";
-import {changeMeshColour, findClosestVertexIndex, transformedVertices,moveSelectedVertex} from "./modes/VertexEditMode.js";
+import {changeMeshColour, findClosestVertexIndex, transformedVertices} from "./modes/vertexEditMode.js";
 
 const pointerDown = (event) => {
-  // Pointer down logic for drawing mode and other modes
+  // Pointer down logic for each modes
   switch (sharedState.currentMode) {
     case "draw":
       // Draw mode pointer down logic
@@ -19,7 +19,6 @@ const pointerDown = (event) => {
         const hitPoint = pickInfoD.pickedPoint;
         sharedState.drawnPoints.push(hitPoint.clone()); // Store the clicked point
         // Visual cue: Add a marker or shape at the clicked point
-        // For example, create a small sphere to mark the point:
         const marker = BABYLON.MeshBuilder.CreateSphere(
           "marker",
           { diameter: 0.1 },
@@ -68,21 +67,12 @@ const pointerDown = (event) => {
 
         
         if (selectedVertexIndex !== null) {
-          // Perform vertex selection visual feedback
-          // For example, change color or scale of the selected vertex
-          const vertexPosition = new BABYLON.Vector3(
-            vertices[selectedVertexIndex * 3], // x-coordinate of the vertex
-            vertices[selectedVertexIndex * 3 + 1], // y-coordinate of the vertex
-            vertices[selectedVertexIndex * 3 + 2] // z-coordinate of the vertex
-          );
-
-          // const sphere = addSphereNearVertex(scene, vertexPosition);
-          const sphereRadius = 0.1; // Adjust the radius of the spheres as needed
+          const sphereRadius = 0.1; // radius of the spheres as needed for marking
           const sphereMaterial = new BABYLON.StandardMaterial(
             "sphereMaterial",
             sceneVE
           );
-          sphereMaterial.diffuseColor = new BABYLON.Color3(0, 1, 0); // Adjust color as desired
+          sphereMaterial.diffuseColor = new BABYLON.Color3(0, 1, 0); // color for marking
           const sphere = BABYLON.MeshBuilder.CreateSphere(
             `sphere`,
             { diameter: sphereRadius * 1 },
@@ -96,26 +86,26 @@ const pointerDown = (event) => {
 };
 
 const pointerUp = (event) => {
-  // Pointer up logic for drawing mode and other modes
+  // Pointer up logic for all modes
   switch (sharedState.currentMode) {
     case "draw":
       // Draw mode pointer up logic
       let drawnPoints = sharedState.drawnPoints;
       const sceneD = sharedState.modeSpecificVariables.draw.scene;
-      if (event.button === 2 && drawnPoints.length > 2) {
-        // Right-click to complete the shape (assuming at least 3 points)
+
+      // Right-click to complete the shape (assuming at least 3 points)
+      if (event.button === 2 && drawnPoints.length > 2) { 
+
         // Create a polygon mesh using the drawn points
         let shape = BABYLON.MeshBuilder.CreatePolygon(
           "shape",
           { shape: drawnPoints },
           sceneD
         );
-        shape.convertToFlatShadedMesh(); // Optional: Improve visual appearance
+        shape.convertToFlatShadedMesh();
         sharedState.selectedPolygon = shape;
-        // drawnPoints = []; // Clear points after creating the shape
       } else if (event.button === 2 && drawnPoints.length <= 2) {
         showPrompt("Alert", "Draw atleast 3 points to finish a shape");
-        // alert('Draw atleast 3 points to finish a shape')
       }
       break;
     case "extrude":
@@ -134,7 +124,7 @@ const pointerUp = (event) => {
 };
 
 const pointerMove = (event) => {
-  // Pointer move logic for drawing mode and other modes
+  // Pointer move logic for all modes
   switch (sharedState.currentMode) {
     case "draw":
       // Draw mode pointer move logic

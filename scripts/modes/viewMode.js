@@ -6,11 +6,4 @@ const enterViewMode = () => {
 
 const exitViewMode = () => {
     };
-
 export {enterViewMode, exitViewMode};
-
-
-
-
-
-

@@ -5,14 +5,11 @@ import { pointerDown as movePointerDown, pointerUp as movePointerUp, pointerMove
 const enterMoveMode = (scene,canvas,camera) => {
     sharedState.currentMode = "move";
     // Logic for moving objects
-    // Implement click-and-drag functionality to move extruded objects
 
     sharedState.cameraSpecs.alpha = camera.alpha;
     sharedState.cameraSpecs.beta = camera.beta;
     sharedState.cameraSpecs.radius = camera.radius;
     sharedState.cameraSpecs.target = camera.target;
-
-
     sharedState.camera.detachControl(canvas);
   
     const ground = scene.getMeshByName("ground");
@@ -30,20 +27,12 @@ const enterMoveMode = (scene,canvas,camera) => {
   };
 
 const exitMoveMode = (canvas,camera) => {
-
-
     // Cleanup for move mode
-
-
-
-
     canvas.removeEventListener("pointerdown", movePointerDown);
     canvas.removeEventListener("pointermove", movePointerMove);
     canvas.removeEventListener("pointerup", movePointerUp);
-
     // allow camera to move
     camera.attachControl(canvas, true);
-
     };
 
   export {enterMoveMode, exitMoveMode};

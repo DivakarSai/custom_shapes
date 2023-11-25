@@ -1,4 +1,3 @@
-
 const hidePrompt = document.getElementById("hidePrompt");
 hidePrompt.addEventListener("click", () => {
     document.getElementById('overlay').style.display = 'none';
@@ -14,10 +13,5 @@ function showPrompt(title, message) {
   
     overlay.style.display = 'flex';
   }
-  
-//   function hidePrompt() {
-//     document.getElementById('overlay').style.display = 'none';
-//   }
-
   
   export {showPrompt};

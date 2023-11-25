@@ -7,17 +7,14 @@ import {
 
 const enterVertexEditMode = (scene, canvas, camera) => {
   // Logic for vertex editing
-  // Allow users to select vertices and move them using mouse interactions
-
   sharedState.currentMode = "vertexEdit";
   sharedState.modeSpecificVariables.vertexEdit.scene = scene;
   sharedState.modeSpecificVariables.vertexEdit.ground = scene.getMeshByName("ground");
-
   sharedState.camera.detachControl(canvas);
 
   canvas.addEventListener("pointerdown", movePointerDown);
-    canvas.addEventListener("pointermove", movePointerMove);
-    canvas.addEventListener("pointerup", movePointerUp);
+  canvas.addEventListener("pointermove", movePointerMove);
+  canvas.addEventListener("pointerup", movePointerUp);
 };
 
 // Function to move the selected vertex
@@ -40,7 +37,7 @@ const moveSelectedVertex = (newPosition, selectedVertexIndex, selectedMesh) => {
 function changeMeshColour(selectedMesh) {
   const scene = sharedState.modeSpecificVariables.extrude.scene;
   let newMaterial = new BABYLON.StandardMaterial("newMaterial", scene);
-  newMaterial.diffuseColor = new BABYLON.Color3(0, 0, 1); // Change to red color (RGB: 1, 0, 0)
+  newMaterial.diffuseColor = new BABYLON.Color3(0, 0, 1);
   selectedMesh.material = newMaterial;
 }
 
