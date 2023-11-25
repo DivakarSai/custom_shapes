@@ -50,23 +50,24 @@ body {
     background-color: #ebebeb;
 }
 
+.sidebar-modes h1{
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-left: 10%;
+}
+
 .sidebar-modes{
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
-    margin-left: 5%;
 }
 
 .sidebar-status{
     font-weight: bold;
-    margin-bottom: 20px;
-    margin-left: 0%;
-
+    margin-bottom: 10px;
 }
-
 #currentMode{
     font-size: 20px;
-    font-weight: lighter;
+    font-weight: light;
     font-stretch: expanded;
     font-family:Arial, Helvetica, sans-serif;
     color: #8c8c8c;
@@ -78,7 +79,6 @@ body {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    margin: 10px 40px;
 }
 
 .mainButton{
@@ -87,8 +87,19 @@ body {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    margin-bottom: 20px;
-    width: 100%;
+    margin: 10px;
+    width: 60%;
+}
+
+.mode-desc{
+    font-size: 14px;
+    font-weight: lighter;
+    font-stretch: expanded;
+    font-family:Arial, Helvetica, sans-serif;
+    color: #8c8c8c;
+    text-align: center;
+    width: 80%;
+
 }
 
 #renderCanvas {
@@ -147,3 +158,16 @@ color: #aaa;
 .close:hover {
 color: black;
 } 
+
+footer{
+    bottom: 0;
+    width: 100%;
+    background-color: #ebebeb;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    border-top: 0.5px solid #dddddd;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: #aaa;
+}
