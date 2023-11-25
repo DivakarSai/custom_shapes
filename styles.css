@@ -2,7 +2,6 @@ body {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: antiquewhite;
 }
 
 .navbar {
@@ -10,15 +9,23 @@ body {
     border: 1px solid transparent;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     color: #333;
+    background-color: #ebebeb;
+    padding: 15px 20px 15px 20px;
+    display: flex;
+    flex-direction: row;
 
 }
 
 .navbar-icon{
+    margin-right: 20px;
+}
+
+.navbar-title{
+    padding-top: 2px;
     font-size: 20px;
     font-weight: bold;
-    margin-top: 20px;
-    color: rgb(208, 176, 134);
 }
+
 
 .main-app{
     display: flex;
@@ -114,7 +121,3 @@ button:hover {
   .close:hover {
     color: black;
   } 
-
-
-
-

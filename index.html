@@ -2,19 +2,17 @@
 <html>
 <head>
     <title>2D Shape Extrusion and Manipulation</title>
-    <link rel="stylesheet" href="styles.css">   
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <nav class="navbar navbar-light bg-light">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">
-            <img src="./icons8-geometry-50.png" alt="" width="30" height="24" class="d-inline-block align-text-top">
-            2D Shape Extrusion and Manipulation
-          </a>
+    <div class="navbar">
+        <div class="navbar-icon">
+            <img src="./icons8-geometry-50.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
         </div>
-      </nav>
+        <div class="navbar-title">
+            2D Shape Extrusion and Manipulation
+        </div>
+    </div>
 
 
     <div class="main-app">
@@ -32,8 +30,6 @@
             </div> 
         </div>
     </div>
-
-
     <div class="overlay" id="overlay">
         <div class="modal">
         <h2 id="promptTitle">Welcome!</h2>
@@ -41,6 +37,7 @@
         <button id="hidePrompt">Close</button>
         </div>
     </div>
+
     <div id="currentMode">Current Mode: None</div>
 
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
