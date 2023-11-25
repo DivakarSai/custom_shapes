@@ -4,7 +4,6 @@ import { pointerDown as movePointerDown, pointerUp as movePointerUp, pointerMove
 // Function to handle moving objects mode
 const enterMoveMode = (scene,canvas,camera) => {
     sharedState.currentMode = "move";
-    console.log("move event starts");
     // Logic for moving objects
     // Implement click-and-drag functionality to move extruded objects
 
@@ -36,18 +35,15 @@ const exitMoveMode = (canvas,camera) => {
     // Cleanup for move mode
 
 
-    // allow camera to move
-    
-    console.log("currentCamera: ", sharedState.camera);
+
 
     canvas.removeEventListener("pointerdown", movePointerDown);
     canvas.removeEventListener("pointermove", movePointerMove);
     canvas.removeEventListener("pointerup", movePointerUp);
 
-
+    // allow camera to move
     camera.attachControl(canvas, true);
 
-    console.log("move event ends");
     };
 
   export {enterMoveMode, exitMoveMode};

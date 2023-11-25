@@ -7,8 +7,6 @@ const enterExtrudeMode = () => {
     let path = [];
     const fixed_depth = 1.2;
     const scene = sharedState.modeSpecificVariables.draw.scene;
-    console.log("Extrude event begins");
-    // console.log("drawnPoints: ", drawnPoints);
   
     if (drawnPoints.length < 3) {
       showPrompt("Alert", 'Draw atleast 3 points to extrude a shape');
@@ -35,7 +33,6 @@ const enterExtrudeMode = () => {
   };
 
   const exitExtrudeMode = () => {
-    console.log("Extrude event ends");
   }
 
   export { enterExtrudeMode, exitExtrudeMode };

@@ -1,115 +1,198 @@
-import sharedState from './sharedState.js';
-import { showPrompt } from './components/prompt.js';
+import sharedState from "./sharedState.js";
+import { showPrompt } from "./components/prompt.js";
+import {changeMeshColour, findClosestVertexIndex, transformedVertices,moveSelectedVertex} from "./modes/VertexEditMode.js";
 
 const pointerDown = (event) => {
-    // Pointer down logic for drawing mode and other modes
-    switch (sharedState.currentMode) {
-        case 'draw':
-            // Draw mode pointer down logic
-                if (event.button !== 0) return; // Check for left mouse click
-                const ground = sharedState.modeSpecificVariables.draw.ground;
-                const scene = sharedState.modeSpecificVariables.draw.scene;
-                const pickInfo = scene.pick(scene.pointerX, scene.pointerY, (mesh) => mesh === ground);
-                if (pickInfo.hit) {
-                    const hitPoint = pickInfo.pickedPoint;
-                    sharedState.drawnPoints.push(hitPoint.clone()); // Store the clicked point
-                    // Visual cue: Add a marker or shape at the clicked point
-                    // For example, create a small sphere to mark the point:
-                    const marker = BABYLON.MeshBuilder.CreateSphere("marker", { diameter: 0.1 }, scene);
-                    marker.position = hitPoint;
-                }
-            break;
-        case 'extrude':
-            // Extrude mode pointer down logic
-            break;
+  // Pointer down logic for drawing mode and other modes
+  switch (sharedState.currentMode) {
+    case "draw":
+      // Draw mode pointer down logic
+      if (event.button !== 0) return; // Check for left mouse click
+      const groundD = sharedState.modeSpecificVariables.draw.ground;
+      const sceneD = sharedState.modeSpecificVariables.draw.scene;
+      const pickInfoD = sceneD.pick(
+        sceneD.pointerX,
+        sceneD.pointerY,
+        (mesh) => mesh === groundD
+      );
+      if (pickInfoD.hit) {
+        const hitPoint = pickInfoD.pickedPoint;
+        sharedState.drawnPoints.push(hitPoint.clone()); // Store the clicked point
+        // Visual cue: Add a marker or shape at the clicked point
+        // For example, create a small sphere to mark the point:
+        const marker = BABYLON.MeshBuilder.CreateSphere(
+          "marker",
+          { diameter: 0.1 },
+          sceneD
+        );
+        marker.position = hitPoint;
+      }
+      break;
+    case "extrude":
+      // Extrude mode pointer down logic
+      break;
 
-        case 'move':
-                // Move mode pointer down logic
-                const scene1 = sharedState.modeSpecificVariables.move.scene;
-                const ground1 = sharedState.modeSpecificVariables.move.ground;
-                const pickedMeshes = sharedState.modeSpecificVariables.move.pickedMeshes;
-                const pickInfo1 = scene1.pick(scene1.pointerX, scene1.pointerY);
-                if (pickInfo1.hit && pickInfo1.pickedMesh !== ground1) {
-                // Check if the picked mesh is not the ground
-                pickedMeshes.push(pickInfo1.pickedMesh);
-                console.log("picked mesh: ", pickInfo1.pickedMesh);
-                }
-                sharedState.modeSpecificVariables.move.pickedMeshes = pickedMeshes;
-                
-            break;
+    case "move":
+      // Move mode pointer down logic
+      const sceneM = sharedState.modeSpecificVariables.move.scene;
+      const groundM = sharedState.modeSpecificVariables.move.ground;
+      const pickedMeshes = sharedState.modeSpecificVariables.move.pickedMeshes;
+      const pickInfoM = sceneM.pick(sceneM.pointerX, sceneM.pointerY);
+      if (pickInfoM.hit && pickInfoM.pickedMesh !== groundM) {
+        // Check if the picked mesh is not the ground
+        pickedMeshes.push(pickInfoM.pickedMesh);
+      }
+      sharedState.modeSpecificVariables.move.pickedMeshes = pickedMeshes;
 
-    }
-    console.log("pointerDown: move", sharedState)
+      break;
+    case "vertexEdit":
+      // vertexEdit mode pointer down logic
+      const sceneVE = sharedState.modeSpecificVariables.vertexEdit.scene;
+      const groundVE = sharedState.modeSpecificVariables.vertexEdit.ground;
+      const pickInfoVE = sceneVE.pick(sceneVE.pointerX, sceneVE.pointerY);
+      if (pickInfoVE.hit && pickInfoVE.pickedMesh !== groundVE) {
+        let selectedMesh = pickInfoVE.pickedMesh;
+        sharedState.selectedMesh = selectedMesh;
+        changeMeshColour(selectedMesh);
+        sharedState.modeSpecificVariables.vertexEdit.isDragging = true;
+        
+        let vertices = transformedVertices(selectedMesh);
+        sharedState.modeSpecificVariables.vertexEdit.vertices = vertices;
+        let selectedVertexIndex = findClosestVertexIndex(
+          selectedMesh,
+          pickInfoVE.pickedPoint,
+          vertices
+        ); //selectedVertexIndex
+
+        sharedState.modeSpecificVariables.move.selectedVertexIndex = selectedVertexIndex;
+
+        
+        if (selectedVertexIndex !== null) {
+          // Perform vertex selection visual feedback
+          // For example, change color or scale of the selected vertex
+          const vertexPosition = new BABYLON.Vector3(
+            vertices[selectedVertexIndex * 3], // x-coordinate of the vertex
+            vertices[selectedVertexIndex * 3 + 1], // y-coordinate of the vertex
+            vertices[selectedVertexIndex * 3 + 2] // z-coordinate of the vertex
+          );
+
+          // const sphere = addSphereNearVertex(scene, vertexPosition);
+          const sphereRadius = 0.1; // Adjust the radius of the spheres as needed
+          const sphereMaterial = new BABYLON.StandardMaterial(
+            "sphereMaterial",
+            sceneVE
+          );
+          sphereMaterial.diffuseColor = new BABYLON.Color3(0, 1, 0); // Adjust color as desired
+          const sphere = BABYLON.MeshBuilder.CreateSphere(
+            `sphere`,
+            { diameter: sphereRadius * 1 },
+            sceneVE
+          );
+          sphere.material = sphereMaterial;
+          sphere.position = vertices[selectedVertexIndex];
+        }
+      }
+  }
 };
 
 const pointerUp = (event) => {
-    // Pointer up logic for drawing mode and other modes
-    switch (sharedState.currentMode) {
-        case 'draw':
-            // Draw mode pointer up logic
-            let drawnPoints = sharedState.drawnPoints
-            const scene = sharedState.modeSpecificVariables.draw.scene;
-            if (event.button === 2 && drawnPoints.length > 2) {
-                // Right-click to complete the shape (assuming at least 3 points)
-                // Create a polygon mesh using the drawn points
-                let shape = BABYLON.MeshBuilder.CreatePolygon("shape", { shape: drawnPoints }, scene);
-                console.log("points events: ", drawnPoints);
-                shape.convertToFlatShadedMesh(); // Optional: Improve visual appearance
-                sharedState.selectedPolygon = shape;
-                // drawnPoints = []; // Clear points after creating the shape
-            }
-            else if (event.button === 2 && drawnPoints.length <= 2) {
-                showPrompt("Alert", 'Draw atleast 3 points to finish a shape');
-                // alert('Draw atleast 3 points to finish a shape')
-            }
-            break;
-        case 'extrude':
-            // Extrude mode pointer up logic
-            break;
-        case 'move':
-            // Move mode pointer up logic
-            console.log("pointeUp move before: ", sharedState.modeSpecificVariables.move.pickedMeshes);
-            let pickedMeshes = sharedState.modeSpecificVariables.move.pickedMeshes;
-            pickedMeshes.length = 0; 
-            console.log("pointeUp move: ", sharedState);
-            break;
-    }
+  // Pointer up logic for drawing mode and other modes
+  switch (sharedState.currentMode) {
+    case "draw":
+      // Draw mode pointer up logic
+      let drawnPoints = sharedState.drawnPoints;
+      const sceneD = sharedState.modeSpecificVariables.draw.scene;
+      if (event.button === 2 && drawnPoints.length > 2) {
+        // Right-click to complete the shape (assuming at least 3 points)
+        // Create a polygon mesh using the drawn points
+        let shape = BABYLON.MeshBuilder.CreatePolygon(
+          "shape",
+          { shape: drawnPoints },
+          sceneD
+        );
+        shape.convertToFlatShadedMesh(); // Optional: Improve visual appearance
+        sharedState.selectedPolygon = shape;
+        // drawnPoints = []; // Clear points after creating the shape
+      } else if (event.button === 2 && drawnPoints.length <= 2) {
+        showPrompt("Alert", "Draw atleast 3 points to finish a shape");
+        // alert('Draw atleast 3 points to finish a shape')
+      }
+      break;
+    case "extrude":
+      // Extrude mode pointer up logic
+      break;
+    case "move":
+      // Move mode pointer up logic
+      let pickedMeshes = sharedState.modeSpecificVariables.move.pickedMeshes;
+      pickedMeshes.length = 0;
+      break;
+    case "vertexEdit":
+        sharedState.modeSpecificVariables.vertexEdit.isDragging = false;
+      break;
+        
+  }
 };
 
-
 const pointerMove = (event) => {
-    // Pointer move logic for drawing mode and other modes
-    switch (sharedState.currentMode) {
-        case 'draw':
-            // Draw mode pointer move logic
-            break;
-        case 'extrude':
-            // Extrude mode pointer move logic
-            break;
-        case 'move':
-            // Move mode pointer move logic
-            // console.log("pointerMove move: ", sharedState);
-            const scene = sharedState.modeSpecificVariables.move.scene;
-            const ground = sharedState.modeSpecificVariables.move.ground;
-            const pickedMeshes = sharedState.modeSpecificVariables.move.pickedMeshes;
-            
-            if (pickedMeshes.length > 0) {
-                const pickInfo = scene.pick(
-                  scene.pointerX,
-                  scene.pointerY,
-                  (mesh) => mesh === ground
-                );
+  // Pointer move logic for drawing mode and other modes
+  switch (sharedState.currentMode) {
+    case "draw":
+      // Draw mode pointer move logic
+      break;
+    case "extrude":
+      // Extrude mode pointer move logic
+      break;
+    case "move":
+      // Move mode pointer move logic
+      const scene = sharedState.modeSpecificVariables.move.scene;
+      const ground = sharedState.modeSpecificVariables.move.ground;
+      const pickedMeshes = sharedState.modeSpecificVariables.move.pickedMeshes;
 
-                if (pickInfo.hit) {
-                  // Move the picked meshes along the ground plane
-                  const newPosition = pickInfo.pickedPoint.clone();
-                  for (let i = 0; i < pickedMeshes.length; i++) {
-                    pickedMeshes[i].position.x = newPosition.x;
-                    pickedMeshes[i].position.z = newPosition.z;
-                  }
-                }
-              }
-    }
-}
+      if (pickedMeshes.length > 0) {
+        const pickInfo = scene.pick(
+          scene.pointerX,
+          scene.pointerY,
+          (mesh) => mesh === ground
+        );
+
+        if (pickInfo.hit) {
+          // Move the picked meshes along the ground plane
+          const newPosition = pickInfo.pickedPoint.clone();
+          for (let i = 0; i < pickedMeshes.length; i++) {
+            pickedMeshes[i].position.x = newPosition.x;
+            pickedMeshes[i].position.z = newPosition.z;
+          }
+        }
+      }
+      break;
+    case "vertexEdit":
+      const sceneVE = sharedState.modeSpecificVariables.vertexEdit.scene;
+      const groundVE = sharedState.modeSpecificVariables.vertexEdit.ground;
+        const isDragging = sharedState.modeSpecificVariables.vertexEdit.isDragging;
+
+        
+        
+        if (isDragging) {
+            const pickInfoVE = sceneVE.pick(sceneVE.pointerX, sceneVE.pointerY);
+            if (pickInfoVE.hit && pickInfoVE.pickedMesh !== groundVE) {
+            let selectedMesh = pickInfoVE.pickedMesh;
+            sharedState.selectedMesh = selectedMesh;
+    
+    
+            const selectedVertexIndex =  findClosestVertexIndex(
+                selectedMesh,
+                pickInfoVE.pickedPoint,
+                sharedState.modeSpecificVariables.vertexEdit.vertices
+              );
+            const pickResult = sceneVE.pick(sceneVE.pointerX, sceneVE.pointerY);
+            if (pickResult.hit && pickResult.pickedMesh === selectedMesh) {
+                const newPosition = pickResult.pickedPoint;
+                //moveSelectedVertex(newPosition, selectedVertexIndex, selectedMesh);
+            }
+            }
+        };
+      break;
+  }
+};
 
 export { pointerDown, pointerUp, pointerMove };
