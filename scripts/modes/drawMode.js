@@ -8,7 +8,7 @@ const enterDrawMode = (scene, canvas) => {
     sharedState.modeSpecificVariables.draw.scene = scene
     sharedState.modeSpecificVariables.draw.ground = scene.getMeshByName("ground");
 
-    
+
     
 
     canvas.addEventListener("pointerdown", drawPointerDown);
@@ -19,7 +19,7 @@ const exitDrawMode = (canvas) => {
     // Cleanup for draw mode
     canvas.removeEventListener("pointerdown", drawPointerDown);
     canvas.removeEventListener("pointerup", drawPointerUp);
-    console.log("Draw event ends");
+    console.log("Draw event ends: ", sharedState.drawnPoints);
 };
 
 export { enterDrawMode, exitDrawMode };

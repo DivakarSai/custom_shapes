@@ -34,10 +34,11 @@ const pointerDown = (event) => {
                 console.log("picked mesh: ", pickInfo1.pickedMesh);
                 }
                 sharedState.modeSpecificVariables.move.pickedMeshes = pickedMeshes;
-                // console.log("pointerDown: move", sharedState)
+                
             break;
 
     }
+    console.log("pointerDown: move", sharedState)
 };
 
 const pointerUp = (event) => {
@@ -51,7 +52,7 @@ const pointerUp = (event) => {
                 // Right-click to complete the shape (assuming at least 3 points)
                 // Create a polygon mesh using the drawn points
                 let shape = BABYLON.MeshBuilder.CreatePolygon("shape", { shape: drawnPoints }, scene);
-                console.log("shape: ", shape);
+                console.log("points events: ", drawnPoints);
                 shape.convertToFlatShadedMesh(); // Optional: Improve visual appearance
                 sharedState.selectedPolygon = shape;
                 // drawnPoints = []; // Clear points after creating the shape
@@ -62,7 +63,7 @@ const pointerUp = (event) => {
             break;
         case 'move':
             // Move mode pointer up logic
-            console.log("pointeUp move before: ", sharedState);
+            console.log("pointeUp move before: ", sharedState.modeSpecificVariables.move.pickedMeshes);
             let pickedMeshes = sharedState.modeSpecificVariables.move.pickedMeshes;
             pickedMeshes.length = 0; 
             console.log("pointeUp move: ", sharedState);
@@ -86,12 +87,14 @@ const pointerMove = (event) => {
             const scene = sharedState.modeSpecificVariables.move.scene;
             const ground = sharedState.modeSpecificVariables.move.ground;
             const pickedMeshes = sharedState.modeSpecificVariables.move.pickedMeshes;
+            
             if (pickedMeshes.length > 0) {
                 const pickInfo = scene.pick(
                   scene.pointerX,
                   scene.pointerY,
                   (mesh) => mesh === ground
                 );
+
                 if (pickInfo.hit) {
                   // Move the picked meshes along the ground plane
                   const newPosition = pickInfo.pickedPoint.clone();
