@@ -17,26 +17,30 @@
       </nav>
 
 
-      <div class="main-app">
+    <div class="main-app">
         <div class="main-app-canvas">
             <canvas id="renderCanvas"></canvas>
         </div>
-          <div class="main-app-controls">
+        <div class="main-app-controls">
             <div class = "controls">
                 <button id="viewButton" class="mainButton">View</button>
                 <button id="drawButton" class="mainButton">Draw</button>
                 <button id="extrudeButton" class="mainButton">Extrude</button>
                 <button id="moveButton" class="mainButton">Move</button>
                 <button id="vertexEditButton" class="mainButton">Vertex Edit</button>
-    
-            </div>
-          </div>
+
+            </div> 
         </div>
-      </div>
+    </div>
 
 
-    
-
+    <div class="overlay" id="overlay">
+        <div class="modal">
+        <h2 id="promptTitle">Welcome!</h2>
+        <p id="promptMessage">This is a prompt component.</p>
+        <button id="hidePrompt">Close</button>
+        </div>
+    </div>
     <div id="currentMode">Current Mode: None</div>
 
     <script src="https://cdn.babylonjs.com/babylon.js"></script>

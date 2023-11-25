@@ -34,11 +34,17 @@ const exitMoveMode = (canvas,camera) => {
 
 
     // Cleanup for move mode
+
+
+    // allow camera to move
+    
+    console.log("currentCamera: ", sharedState.camera);
+
     canvas.removeEventListener("pointerdown", movePointerDown);
     canvas.removeEventListener("pointermove", movePointerMove);
     canvas.removeEventListener("pointerup", movePointerUp);
 
-    // allow camera to be moved again
+
     camera.attachControl(canvas, true);
 
     console.log("move event ends");

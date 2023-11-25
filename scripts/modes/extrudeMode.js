@@ -23,7 +23,7 @@ const enterExtrudeMode = () => {
     const shape = BABYLON.MeshBuilder.ExtrudePolygon("extrudedShape",{ shape: drawnPoints, depth: fixed_depth },scene);
     shape.position.y += fixed_depth;
 
-    sharedState.selectedPolygon.dispose(); // removes the polygon created in drawMode from memory
+    if(sharedState.selectedPolygon != null)sharedState.selectedPolygon.dispose(); // removes the polygon created in drawMode from memory
     // 'depth' parameter controls the extrusion height, adjust as needed
   
     // Optionally, perform additional operations or set properties for the extruded shape

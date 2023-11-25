@@ -14,8 +14,6 @@ let scene,
   camera = [];
 let currentMode = "none"; // Initialize with default mode
 
-// let alpha, beta, radius, target;
-
 const setCurrentMode = (newMode) => {
   const prevMode = sharedState.currentMode;
   if (sharedState.currentMode !== newMode) {
@@ -128,27 +126,38 @@ const enterVertexEditMode = () => {
   };
 
   function addSpheresToVertices(selectedMesh) {
-    selectedMesh.refreshBoundingInfo(true);
-    selectedMesh.computeWorldMatrix(true);
-    selectedMesh.updateFacetData();
+
     var vertexData = BABYLON.VertexData.ExtractFromMesh(selectedMesh);
     var positions = vertexData.positions;
 
-    // Create spheres at each vertex position
-    for (var i = 0; i < positions.length; i += 3) {
-      var sphere = BABYLON.MeshBuilder.CreateSphere(
-        "sphere",
-        { diameter: 0.1 },
-        scene
-      );
 
-      // Set sphere positions based on the vertex positions
-      sphere.position = new BABYLON.Vector3(
-        positions[i],
-        positions[i + 1],
-        positions[i + 2]
-      );
+    // Get the updated world matrix of the mesh after transformation
+    const worldMatrix = selectedMesh.getWorldMatrix();
+
+    // Get the original vertices data
+    const originalVerticesData = selectedMesh.getVerticesData(BABYLON.VertexBuffer.PositionKind);
+
+    // Create an array to store transformed vertices
+    const transformedVertices = [];
+
+    // Transform each vertex using the world matrix
+    for (let i = 0; i < originalVerticesData.length; i += 3) {
+        const vertex = new BABYLON.Vector3(originalVerticesData[i], originalVerticesData[i + 1], originalVerticesData[i + 2]);
+        const transformedVertex = BABYLON.Vector3.TransformCoordinates(vertex, worldMatrix);
+        transformedVertices.push(transformedVertex);
     }
+
+    // Loop through the transformed vertices and create spheres at those positions
+    const sphereRadius = 0.1; // Adjust the radius of the spheres as needed
+    const sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", scene);
+    sphereMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0); // Adjust color as desired
+
+    for (let i = 0; i < transformedVertices.length; i++) {
+        const sphere = BABYLON.MeshBuilder.CreateSphere(`sphere${i}`, { diameter: sphereRadius * 2 }, scene);
+        sphere.material = sphereMaterial;
+        sphere.position = transformedVertices[i];
+    }
+
   }
 
   const pointerMove = (event) => {

@@ -1,4 +1,5 @@
 import sharedState from './sharedState.js';
+import { showPrompt } from './components/prompt.js';
 
 const pointerDown = (event) => {
     // Pointer down logic for drawing mode and other modes
@@ -56,6 +57,10 @@ const pointerUp = (event) => {
                 shape.convertToFlatShadedMesh(); // Optional: Improve visual appearance
                 sharedState.selectedPolygon = shape;
                 // drawnPoints = []; // Clear points after creating the shape
+            }
+            else if (event.button === 2 && drawnPoints.length <= 2) {
+                showPrompt("Alert", 'Draw atleast 3 points to finish a shape');
+                // alert('Draw atleast 3 points to finish a shape')
             }
             break;
         case 'extrude':
