@@ -21,17 +21,21 @@
         <div class="sidebar">
             <div class="sidebar-modes">
                 <h1>Modes</h1>
+                <div class = "controls">
+                    <button id="viewButton" class="mainButton">View</button>
+                    <button id="drawButton" class="mainButton">Draw</button>
+                    <button id="extrudeButton" class="mainButton">Extrude</button>
+                    <button id="moveButton" class="mainButton">Move</button>
+                    <button id="vertexEditButton" class="mainButton">Vertex Edit</button>   
+                </div> 
+            </div>
+            <div class="sidebar-status">
+                <h1>Status</h1>
+                <div id="currentMode">Current Mode: None</div>
             </div>
             
-            <div class = "controls">
-                <button id="viewButton" class="mainButton">View</button>
-                <button id="drawButton" class="mainButton">Draw</button>
-                <button id="extrudeButton" class="mainButton">Extrude</button>
-                <button id="moveButton" class="mainButton">Move</button>
-                <button id="vertexEditButton" class="mainButton">Vertex Edit</button>
 
-            </div> 
-            <div id="currentMode">Current Mode: None</div>
+            
         </div>
     </div>
     <div class="overlay" id="overlay">
