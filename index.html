@@ -14,12 +14,15 @@
         </div>
     </div>
 
-
     <div class="main-app">
         <div class="main-app-canvas">
             <canvas id="renderCanvas"></canvas>
         </div>
-        <div class="main-app-controls">
+        <div class="sidebar">
+            <div class="sidebar-modes">
+                <h1>Modes</h1>
+            </div>
+            
             <div class = "controls">
                 <button id="viewButton" class="mainButton">View</button>
                 <button id="drawButton" class="mainButton">Draw</button>
@@ -28,6 +31,7 @@
                 <button id="vertexEditButton" class="mainButton">Vertex Edit</button>
 
             </div> 
+            <div id="currentMode">Current Mode: None</div>
         </div>
     </div>
     <div class="overlay" id="overlay">
@@ -38,7 +42,7 @@
         </div>
     </div>
 
-    <div id="currentMode">Current Mode: None</div>
+    
 
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/earcut"></script>
