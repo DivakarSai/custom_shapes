@@ -1,4 +1,4 @@
-import sharedState from "../sharedState";
+import sharedState from "../sharedState.js";
 
 const pointerDown = (event) => {
     const pickInfo = scene.pick(scene.pointerX, scene.pointerY);
