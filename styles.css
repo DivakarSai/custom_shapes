@@ -5,12 +5,41 @@ body {
     background-color: antiquewhite;
 }
 
+.navbar {
+    position: relative;
+    border: 1px solid transparent;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: #333;
+
+}
+
+.navbar-icon{
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+    color: rgb(208, 176, 134);
+}
+
+.main-app{
+    display: flex;
+    flex-direction: row;
+}
+
+.main-app-canvas{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 .controls{
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    width: 70%;
     align-items: center;
     margin: 10px 40px;
+    background-color: #fff;
 }
 
 .mainButton{
@@ -19,11 +48,12 @@ body {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
+    margin-bottom: 20px;
 }
 
 #renderCanvas {
-    width: 75%;
-    height: 75%;
+    width: 90%;
+    height: 90%;
     touch-action: none;
     margin: 10px 30px;
 }

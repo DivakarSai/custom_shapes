@@ -2,18 +2,40 @@
 <html>
 <head>
     <title>2D Shape Extrusion and Manipulation</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css">   
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
 </head>
 <body>
-    <canvas id="renderCanvas"></canvas>
-    <div class = "controls">
-        <button id="viewButton" class="mainButton">View</button>
-        <button id="drawButton" class="mainButton">Draw</button>
-        <button id="extrudeButton" class="mainButton">Extrude</button>
-        <button id="moveButton" class="mainButton">Move</button>
-        <button id="vertexEditButton" class="mainButton">Vertex Edit</button>
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">
+            <img src="./icons8-geometry-50.png" alt="" width="30" height="24" class="d-inline-block align-text-top">
+            2D Shape Extrusion and Manipulation
+          </a>
+        </div>
+      </nav>
 
-    </div>
+
+      <div class="main-app">
+        <div class="main-app-canvas">
+            <canvas id="renderCanvas"></canvas>
+        </div>
+          <div class="main-app-controls">
+            <div class = "controls">
+                <button id="viewButton" class="mainButton">View</button>
+                <button id="drawButton" class="mainButton">Draw</button>
+                <button id="extrudeButton" class="mainButton">Extrude</button>
+                <button id="moveButton" class="mainButton">Move</button>
+                <button id="vertexEditButton" class="mainButton">Vertex Edit</button>
+    
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    
 
     <div id="currentMode">Current Mode: None</div>
 
