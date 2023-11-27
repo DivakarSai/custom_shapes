@@ -12,11 +12,9 @@ const enterMoveMode = (scene,canvas,camera) => {
     sharedState.cameraSpecs.target = camera.target;
     sharedState.camera.detachControl(canvas);
   
-    const ground = scene.getMeshByName("ground");
     const pickedMeshes = []; // Array to store picked meshes
 
-    sharedState.modeSpecificVariables.move.scene = scene;
-    sharedState.modeSpecificVariables.move.ground = ground;
+    sharedState.scene = scene;
     sharedState.modeSpecificVariables.move.pickedMeshes = pickedMeshes;
   
     // Event listeners for pointer events

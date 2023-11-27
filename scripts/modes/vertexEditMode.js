@@ -35,7 +35,7 @@ const moveSelectedVertex = (newPosition, selectedVertexIndex, selectedMesh) => {
 
 // Function to change mesh colour
 function changeMeshColour(selectedMesh) {
-  const scene = sharedState.modeSpecificVariables.extrude.scene;
+  const scene = sharedState.scene;
   let newMaterial = new BABYLON.StandardMaterial("newMaterial", scene);
   newMaterial.diffuseColor = new BABYLON.Color3(0, 0, 1);
   selectedMesh.material = newMaterial;
