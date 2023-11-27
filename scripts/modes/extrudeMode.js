@@ -6,7 +6,7 @@ const enterExtrudeMode = () => {
     let drawnPoints = sharedState.drawnPoints;
     let path = [];
     const fixed_depth = 1.2;
-    const scene = sharedState.scene;
+    const scene = sharedState.modeSpecificVariables.draw.scene;
   
     if (drawnPoints.length < 3) {
       showPrompt("Alert", 'Draw atleast 3 points to extrude a shape');

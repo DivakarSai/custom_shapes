@@ -1,15 +1,26 @@
 const sharedState = {
     currentMode: "none",
     drawnPoints: [],
-    scene: null,
     selectedMesh: null,
     selectedVertex: null,
     selectedPolygon: null,
     modeSpecificVariables: {
+      draw: {
+        scene: null,
+        ground: null,
+      },
+      extrude: {
+        scene: null,
+        ground: null,
+      },
       move: {
+        scene: null,
+        ground: null,
         pickedMeshes: [],
       },
       vertexEdit: {
+        scene: null,
+        ground: null,
         vertices: [],
         selectedVertex: null,
         selectedMesh: null,
