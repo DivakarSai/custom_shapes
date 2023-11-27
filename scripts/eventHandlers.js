@@ -25,6 +25,7 @@ const pointerDown = (event) => {
           sceneD
         );
         marker.position = hitPoint;
+        sharedState.drawnMarkers.push(marker);
       }
       break;
     case "extrude":

@@ -1,6 +1,7 @@
 const sharedState = {
     currentMode: "none",
     drawnPoints: [],
+    drawnMarkers: [],
     selectedMesh: null,
     selectedVertex: null,
     selectedPolygon: null,
