@@ -2,6 +2,9 @@ const sharedState = {
     currentMode: "none",
     drawnPoints: [],
     drawnMarkers: [],
+    vertices: [],
+    indices: [],
+    repeatedVertices: [],
     selectedMesh: null,
     selectedVertex: null,
     selectedPolygon: null,
@@ -23,19 +26,15 @@ const sharedState = {
         scene: null,
         ground: null,
         vertices: [],
+        newPositions: [],
         selectedVertex: null,
         selectedMesh: null,
         selectedVertexIndex: 3,
         isDragging:0,
+        endPosition: null,
       },
     },
     camera: [],
-    cameraSpecs: {
-      alpha: null,
-      beta: null,
-      radius: null,
-      target: null,
-    },
   };
   
   export default sharedState;
