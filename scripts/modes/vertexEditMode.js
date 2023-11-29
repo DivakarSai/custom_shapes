@@ -19,12 +19,50 @@ const enterVertexEditMode = (scene, canvas, camera) => {
 
 // Function to move the selected vertex
 const moveSelectedVertex = (newPosition, selectedVertexIndex, selectedMesh) => {
-  const positions = sharedState.vertices;
-  positions[selectedVertexIndex * 3] = newPosition.x;
-  //positions[selectedVertexIndex * 3 + 1] = newPosition.y;
-  positions[selectedVertexIndex * 3 + 2] = newPosition.z;
 
-  sharedState.modeSpecificVariables.vertexEdit.newPositions = positions;
+
+  // get mesh by id and dispose it
+  const scene = sharedState.modeSpecificVariables.vertexEdit.scene;
+  const currentMesh= scene.getMeshById("extrudedShape");
+    currentMesh.dispose();
+
+    const positions = sharedState.vertices; // Vertices data
+    
+
+    // Get the indices data
+    const indices = sharedState.indices; // Indices data
+
+
+    const indexes_list = sharedState.repeatedVertices;
+
+    const alteredIndex = selectedVertexIndex;
+
+    //alter all the vertices that are repeated
+    for(let i=0;i<3;i++){
+      let nowIndex = indexes_list[alteredIndex][i];
+      positions[nowIndex*3] += newPosition.x;
+      positions[nowIndex*3+1] += newPosition.y;
+      positions[nowIndex*3+2] += newPosition.z;
+    }
+
+    const reconstructedMesh = new BABYLON.Mesh("reconstructedMesh", scene);
+
+    // Create a VertexData object
+    const vertexData = new BABYLON.VertexData();
+
+    // Assign stored positions to the vertex data
+    vertexData.positions = positions;
+
+    // Assign stored indices to the vertex data
+    vertexData.indices = indices;
+
+    // Apply the vertex data to the reconstructed mesh
+    vertexData.applyToMesh(reconstructedMesh);
+
+
+    // Update the vertices in the sharedState
+    sharedState.vertices = positions;
+
 
 };
 
@@ -77,11 +115,6 @@ const findClosestVertexIndex = (mesh, point) => {
   for (let i = 0; i < vertices.length/3; i += 3) {
     let vertex = BABYLON.Vector3.FromArray(vertices, i).multiply(mesh.scaling);
     vertex = BABYLON.Vector3.TransformCoordinates(vertex, worldMatrix);
-
-    
-    console.log("vertex ", vertex);
-    console.log("index ",i/3);
-    console.log("distance ", BABYLON.Vector3.Distance(vertex, point));
     
 
     const distance = BABYLON.Vector3.Distance(vertex, point);
@@ -101,59 +134,7 @@ const exitVertexEditMode = (canvas,camera) => {
   
   // reconstruct the mesh using the new positions
   camera.attachControl(canvas, true);
-  if (sharedState.selectedMesh) {
-    const selectedMesh = sharedState.selectedMesh;
 
-// Get the vertices data
-    const positions = sharedState.vertices; // Vertices data
-
-    // Get the indices data
-    const indices = sharedState.indices; // Indices data
-    console.log('old indices',indices);
-
-    // Log the vertices and indices for demonstration
-    console.log("Vertices:", positions);
-    console.log("Indices:", indices);
-
-    const indexes_list = sharedState.repeatedVertices;
-
-    const alteredIndex = sharedState.modeSpecificVariables.vertexEdit.selectedVertexIndex;
-
-    //alter all the vertices that are repeated
-    for(let i=0;i<3;i++){
-      let nowIndex = indexes_list[alteredIndex][i];
-      positions[nowIndex*3+ 1] += 1;
-    }
-    
-    selectedMesh.dispose(); 
-
-        // Assuming 'scene' is your Babylon.js scene
-    // 'positions' and 'indices' are the stored vertices and indices
-
-    // Create a new mesh
-    const scene = sharedState.modeSpecificVariables.vertexEdit.scene;
-    const reconstructedMesh = new BABYLON.Mesh("reconstructedMesh", scene);
-
-    // Create a VertexData object
-    const vertexData = new BABYLON.VertexData();
-
-    // Assign stored positions to the vertex data
-    vertexData.positions = positions;
-
-    // Assign stored indices to the vertex data
-    vertexData.indices = indices;
-
-    // Apply the vertex data to the reconstructed mesh
-    vertexData.applyToMesh(reconstructedMesh);
-
-
-    // Update the vertices in the sharedState
-    sharedState.vertices = positions;
-
-
-  }
-  
-  sharedState.modeSpecificVariables.vertexEdit.isDragging = false;
 };
 
 export {

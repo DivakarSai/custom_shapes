@@ -22,6 +22,7 @@ const enterExtrudeMode = () => {
     
     const shape = BABYLON.MeshBuilder.ExtrudePolygon("extrudedShape",{ shape: drawnPoints, depth: fixed_depth },scene);
     shape.position.y += fixed_depth;
+    shape.id = "extrudedShape";
 
     //store the vertices in the sharedState
     const positions =  shape.getVerticesData(BABYLON.VertexBuffer.PositionKind);

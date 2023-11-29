@@ -62,6 +62,17 @@ const pointerDown = (event) => {
         sharedState.modeSpecificVariables.vertexEdit.isDragging = true;
 
         let vertices = transformedVertices(selectedMesh);
+
+        let positions = [];
+        for(let i=0;i<vertices.length;i++){
+            positions.push(vertices[i]._x);
+            positions.push(vertices[i]._y);
+            positions.push(vertices[i]._z);
+        }
+
+        sharedState.vertices = positions;
+
+        
         sharedState.modeSpecificVariables.vertexEdit.vertices = vertices;
         let selectedVertexIndex = findClosestVertexIndex(
           selectedMesh,
@@ -95,6 +106,7 @@ const pointerDown = (event) => {
           );
           sphere.material = sphereMaterial;
           sphere.position = vertices[selectedVertexIndex];
+          sphere.id = "pickedVertex";
         }
       }
   }
@@ -135,17 +147,14 @@ const pointerUp = (event) => {
         //store the position of the mouse pointer in sharedState
         const sceneVE = sharedState.modeSpecificVariables.vertexEdit.scene;
         const pickInfoVE = sceneVE.pick(sceneVE.pointerX, sceneVE.pointerY);
-        if (pickInfoVE.hit) {
-          const hitPoint = pickInfoVE.pickedPoint;
-          sharedState.modeSpecificVariables.vertexEdit.endPosition = hitPoint.clone(); // Store the clicked point
-          // Visual cue: Add a marker or shape at the clicked point
-        //   const marker = BABYLON.MeshBuilder.CreateSphere(
-        //     "marker",
-        //     { diameter: 0.1 },
-        //     sceneVE
-        //   );
-        //   marker.position = hitPoint;
-        //   sharedState.drawnMarkers.push(marker);
+
+        //check if marker sphere exists
+        let sphereMesh = sceneVE.getMeshByID("pickedVertex");
+        if (sphereMesh) {
+            let endPosition = sphereMesh.position;
+            // dispose the marker sphere
+            sphereMesh.dispose();
+            moveSelectedVertex(endPosition, sharedState.modeSpecificVariables.move.selectedVertexIndex, sharedState.selectedMesh);
         }
 
 
@@ -209,10 +218,8 @@ const pointerMove = (event) => {
             const pickResult = sceneVE.pick(sceneVE.pointerX, sceneVE.pointerY);
             if (pickResult.hit && pickResult.pickedMesh === selectedMesh) {
                 const newPosition = pickResult.pickedPoint;
-                // console.log("newPosition", newPosition);
-                // let sphereMesh = sceneVE.getMeshByID("pickedVertex");
-                // console.log("sphereMesh position", sphereMesh.position);
-                moveSelectedVertex(newPosition, selectedVertexIndex, selectedMesh);
+                let sphereMesh = sceneVE.getMeshByID("pickedVertex");
+                sphereMesh.position = newPosition;
             }
             }
         };
