@@ -12,7 +12,11 @@ const enterDrawMode = (scene, canvas) => {
 };
 
 const exitDrawMode = (canvas) => {
-    // Cleanup for draw mode
+    // remove drawn markers
+    sharedState.drawnMarkers.forEach((marker) => {
+        marker.dispose();
+    });
+    // remove event listeners
     canvas.removeEventListener("pointerdown", drawPointerDown);
     canvas.removeEventListener("pointerup", drawPointerUp);
 };

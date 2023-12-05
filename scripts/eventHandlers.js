@@ -1,6 +1,6 @@
 import sharedState from "./sharedState.js";
 import { showPrompt } from "./components/prompt.js";
-import {changeMeshColour, findClosestVertexIndex, transformedVertices} from "./modes/vertexEditMode.js";
+import {changeMeshColour, findClosestVertexIndex,  moveSelectedVertex, transformedVertices} from "./modes/vertexEditMode.js";
 
 const pointerDown = (event) => {
   // Pointer down logic for each modes
@@ -25,6 +25,7 @@ const pointerDown = (event) => {
           sceneD
         );
         marker.position = hitPoint;
+        sharedState.drawnMarkers.push(marker);
       }
       break;
     case "extrude":
@@ -43,6 +44,11 @@ const pointerDown = (event) => {
       }
       sharedState.modeSpecificVariables.move.pickedMeshes = pickedMeshes;
 
+      if (pickInfoM.hit && pickInfoM.pickedMesh !== groundM) {
+        let selectedMesh = pickInfoM.pickedMesh;
+        sharedState.selectedMesh = selectedMesh;
+      }
+
       break;
     case "vertexEdit":
       // vertexEdit mode pointer down logic
@@ -54,8 +60,19 @@ const pointerDown = (event) => {
         sharedState.selectedMesh = selectedMesh;
         changeMeshColour(selectedMesh);
         sharedState.modeSpecificVariables.vertexEdit.isDragging = true;
-        
+
         let vertices = transformedVertices(selectedMesh);
+
+        let positions = [];
+        for(let i=0;i<vertices.length;i++){
+            positions.push(vertices[i]._x);
+            positions.push(vertices[i]._y);
+            positions.push(vertices[i]._z);
+        }
+
+        sharedState.vertices = positions;
+
+        
         sharedState.modeSpecificVariables.vertexEdit.vertices = vertices;
         let selectedVertexIndex = findClosestVertexIndex(
           selectedMesh,
@@ -65,14 +82,23 @@ const pointerDown = (event) => {
 
         sharedState.modeSpecificVariables.move.selectedVertexIndex = selectedVertexIndex;
 
-        
+
         if (selectedVertexIndex !== null) {
-          const sphereRadius = 0.1; // radius of the spheres as needed for marking
+          // Perform vertex selection visual feedback
+          // For example, change color or scale of the selected vertex
+          const vertexPosition = new BABYLON.Vector3(
+            vertices[selectedVertexIndex * 3], // x-coordinate of the vertex
+            vertices[selectedVertexIndex * 3 + 1], // y-coordinate of the vertex
+            vertices[selectedVertexIndex * 3 + 2] // z-coordinate of the vertex
+          );
+
+          // const sphere = addSphereNearVertex(scene, vertexPosition);
+          const sphereRadius = 0.1; // Adjust the radius of the spheres as needed
           const sphereMaterial = new BABYLON.StandardMaterial(
             "sphereMaterial",
             sceneVE
           );
-          sphereMaterial.diffuseColor = new BABYLON.Color3(0, 1, 0); // color for marking
+          sphereMaterial.diffuseColor = new BABYLON.Color3(0, 1, 0); // Adjust color as desired
           const sphere = BABYLON.MeshBuilder.CreateSphere(
             `sphere`,
             { diameter: sphereRadius * 1 },
@@ -80,6 +106,7 @@ const pointerDown = (event) => {
           );
           sphere.material = sphereMaterial;
           sphere.position = vertices[selectedVertexIndex];
+          sphere.id = "pickedVertex";
         }
       }
   }
@@ -117,6 +144,20 @@ const pointerUp = (event) => {
       pickedMeshes.length = 0;
       break;
     case "vertexEdit":
+        //store the position of the mouse pointer in sharedState
+        const sceneVE = sharedState.modeSpecificVariables.vertexEdit.scene;
+        const pickInfoVE = sceneVE.pick(sceneVE.pointerX, sceneVE.pointerY);
+
+        //check if marker sphere exists
+        let sphereMesh = sceneVE.getMeshByID("pickedVertex");
+        if (sphereMesh) {
+            let endPosition = sphereMesh.position;
+            // dispose the marker sphere
+            sphereMesh.dispose();
+            moveSelectedVertex(endPosition, sharedState.modeSpecificVariables.move.selectedVertexIndex, sharedState.selectedMesh);
+        }
+
+
         sharedState.modeSpecificVariables.vertexEdit.isDragging = false;
       break;
         
@@ -177,7 +218,8 @@ const pointerMove = (event) => {
             const pickResult = sceneVE.pick(sceneVE.pointerX, sceneVE.pointerY);
             if (pickResult.hit && pickResult.pickedMesh === selectedMesh) {
                 const newPosition = pickResult.pickedPoint;
-                //moveSelectedVertex(newPosition, selectedVertexIndex, selectedMesh);
+                let sphereMesh = sceneVE.getMeshByID("pickedVertex");
+                sphereMesh.position = newPosition;
             }
             }
         };
